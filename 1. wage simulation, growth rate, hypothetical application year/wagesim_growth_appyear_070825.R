@@ -11,7 +11,7 @@ setwd(PathIn)
 # Load Data
 ifls <- read.csv("~/Documents/033125_ifls_match.csv")
 sakernas <- read.csv("~/Documents/033125_sakernas_match.csv")
-
+sakernas_full <- read.csv("~/Documents/sakernas_full_1014.csv")
 
 # WAGE SIMULATION -------------------------------------------------------------#
 # (1) IFLS
@@ -137,6 +137,17 @@ sakernas$pk_apply_year <- sakernas$pk_accept_year
 
 sakernas$pk_apply_year[no_app_year_indices] <- random_years
 
+# COMBINE BACK WITH BIG DATASET -----------------------------------------------#
+sakernas_full <- sakernas_full %>%
+  rename(id = X)
+intersect(names(sakernas), names(sakernas_full))
 
+sakernas_combined <- sakernas_full %>%
+  left_join(sakernas, by = c("id", "age", "male", "married", "educ", "village",
+                             "employ", "wage", "ln_wage", "pk_know", "pk_apply",
+                             "pk_reason", "pk_accept", "pk_accept_year", "pk_work",
+                             "pk_complete", "pk_inline", "pk_skill", "pk_inc_daily",
+                             "pk_inc_capital", "pk_inc_debt", "pk_inc_transport",
+                             "pk_inc_internet", "pk_inc_train", "pk_inc_other"))
 # Save
-write.csv(sakernas, "sakernas_070825.csv", row.names = FALSE)
+write.csv(sakernas_combined, "sakernas_070825.csv", row.names = FALSE)
